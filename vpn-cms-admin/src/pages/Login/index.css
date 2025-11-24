@@ -1,0 +1,230 @@
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #1a365d 0%, #2d3748 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+/* 添加动态背景效果 */
+.login-container::before {
+  content: '';
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  top: -50%;
+  left: -50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+  animation: rotate 30s linear infinite;
+  z-index: 1;
+}
+
+/* 添加粒子效果 */
+.login-container::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(circle, #ffffff 1px, transparent 1px),
+    radial-gradient(circle, #ffffff 1px, transparent 1px),
+    radial-gradient(circle, #ffffff 1px, transparent 1px),
+    radial-gradient(circle, #ffffff 1px, transparent 1px);
+  background-size: 40px 40px;
+  background-position: 0 0, 20px 20px, 10px 30px, 30px 10px;
+  animation: particleFloat 20s linear infinite;
+  opacity: 0.15;
+  z-index: 1;
+}
+
+@keyframes particleFloat {
+  0% {
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: translate(-10px, 10px);
+  }
+  50% {
+    transform: translate(10px, -10px);
+  }
+  75% {
+    transform: translate(-10px, -10px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+/* 添加浮动粒子 */
+.particle {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.particle:nth-child(1) { top: 20%; left: 20%; animation: float1 4s infinite; }
+.particle:nth-child(2) { top: 60%; left: 80%; animation: float2 6s infinite; }
+.particle:nth-child(3) { top: 40%; left: 40%; animation: float3 5s infinite; }
+.particle:nth-child(4) { top: 80%; left: 60%; animation: float4 7s infinite; }
+.particle:nth-child(5) { top: 30%; left: 70%; animation: float5 8s infinite; }
+
+@keyframes float1 {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(20px, -20px); }
+}
+
+@keyframes float2 {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(-15px, 15px); }
+}
+
+@keyframes float3 {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(15px, 15px); }
+}
+
+@keyframes float4 {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(-20px, -10px); }
+}
+
+@keyframes float5 {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(10px, -15px); }
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.login-card-wrapper {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 420px;
+  padding: 20px;
+}
+
+.login-card {
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  padding: 40px !important;
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.login-header h2 {
+  color: #1a365d;
+  margin-bottom: 8px !important;
+}
+
+.login-desc {
+  color: #718096;
+  font-size: 16px;
+  margin-bottom: 24px;
+}
+
+/* 输入框样式 */
+/* .ant-input-affix-wrapper {
+  border-radius: 8px !important;
+  height: 44px !important;
+  padding: 4px 11px !important;
+  transition: all 0.3s ease !important;
+}
+
+.ant-input-affix-wrapper:hover,
+.ant-input-affix-wrapper:focus {
+  border-color: #4299e1 !important;
+  box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.2) !important;
+}
+
+.ant-input-affix-wrapper .anticon {
+  color: #718096;
+}
+
+/* 错误提示样式 */
+.ant-form-item-explain-error {
+  text-align: left !important;
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+}
+
+.ant-form-item-explain {
+  text-align: left !important;
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+} */
+
+/* 按钮样式 */
+.login-form-button {
+  height: 44px !important;
+  border-radius: 8px !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  background: linear-gradient(135deg, #4299e1 0%, #2b6cb0 100%) !important;
+  border: none !important;
+  box-shadow: 0 4px 14px rgba(66, 153, 225, 0.3) !important;
+}
+
+/* 记住我和忘记密码样式 */
+/* .ant-form-item-control-input-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+} */
+
+.login-form-forgot {
+  color: #4299e1 !important;
+  transition: color 0.3s ease;
+}
+
+.login-form-forgot:hover {
+  color: #2b6cb0 !important;
+  text-decoration: none;
+}
+
+/* 复选框样式 */
+.ant-checkbox-wrapper:hover .ant-checkbox-inner,
+.ant-checkbox:hover .ant-checkbox-inner,
+.ant-checkbox-input:focus + .ant-checkbox-inner {
+  border-color: #4299e1 !important;
+}
+
+.ant-checkbox-checked .ant-checkbox-inner {
+  background-color: #4299e1 !important;
+  border-color: #4299e1 !important;
+}
+
+/* 响应式调整 */
+@media (max-width: 576px) {
+  .login-card-wrapper {
+    padding: 16px;
+  }
+  
+  .login-card {
+    padding: 24px !important;
+  }
+  
+  .login-header h2 {
+    font-size: 24px !important;
+  }
+  
+  .login-desc {
+    font-size: 14px;
+  }
+} 

@@ -1,0 +1,124 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 响应式设计样式 */
+@media (max-width: 768px) {
+  /* 通用样式 */
+  .ant-card {
+    margin-bottom: 1rem;
+  }
+
+  /* 表格样式 - 允许水平滚动 */
+  .ant-table-wrapper {
+    overflow-x: auto;
+  }
+
+  /* 表单样式 */
+  .ant-form-item {
+    margin-bottom: 0.75rem;
+  }
+
+  /* 按钮组样式 */
+  .ant-space {
+    flex-wrap: wrap;
+    gap: 0.5rem !important;
+  }
+
+  /* 标题样式 */
+  h1 {
+    font-size: 1.75rem !important;
+  }
+  
+  h2 {
+    font-size: 1.5rem !important;
+  }
+  
+  h3 {
+    font-size: 1.25rem !important;
+  }
+
+  /* 导航菜单样式 */
+  .ant-menu-horizontal {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  /* 弹窗样式 */
+  .ant-modal-content {
+    width: 95%;
+    margin: 0 auto;
+  }
+
+  /* 页面内容边距 */
+  .ant-layout-content {
+    padding: 1rem;
+  }
+}
+
+/* 针对更小屏幕的样式 */
+@media (max-width: 480px) {
+  /* 页头样式 */
+  .ant-layout-header {
+    padding: 0 0.5rem;
+  }
+
+  /* 按钮样式 */
+  .ant-btn {
+    padding: 0.25rem 0.75rem;
+    font-size: 0.875rem;
+  }
+
+  /* 表单项标签样式 */
+  .ant-form-item-label {
+    padding: 0 0 4px;
+  }
+
+  /* 卡片内容边距 */
+  .ant-card-body {
+    padding: 1rem;
+  }
+
+  /* 标题样式进一步缩小 */
+  h1 {
+    font-size: 1.5rem !important;
+  }
+  
+  h2 {
+    font-size: 1.25rem !important;
+  }
+  
+  h3 {
+    font-size: 1.125rem !important;
+  }
+}
+

@@ -1,0 +1,148 @@
+/* 响应式设计样式 */
+
+/* 针对所有页面的通用响应式样式 */
+@media (max-width: 768px) {
+  /* 表格容器样式 */
+  .ant-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+  }
+  
+  /* 表格内容样式 */
+  .ant-table-content {
+    overflow-x: auto;
+  }
+  
+  /* 表单项间距 */
+  .ant-form-item {
+    margin-bottom: 16px;
+  }
+  
+  /* 卡片内边距调整 */
+  .ant-card-body {
+    padding: 16px;
+  }
+  
+  /* 按钮组样式 */
+  .ant-btn-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  /* 弹窗样式 */
+  .ant-modal {
+    max-width: 95%;
+    margin: 0 auto;
+  }
+  
+  /* 下拉菜单样式 */
+  .ant-dropdown-menu {
+    max-width: 90vw;
+  }
+  
+  /* 标签组样式 */
+  .ant-tabs-nav {
+    width: 100%;
+    overflow-x: auto;
+  }
+}
+
+/* 针对更小屏幕的样式 */
+@media (max-width: 576px) {
+  /* 间距缩小 */
+  .ant-space {
+    gap: 8px !important;
+  }
+  
+  /* 表单布局调整 */
+  .ant-form-item-label {
+    padding-bottom: 4px;
+  }
+  
+  /* 按钮尺寸调整 */
+  .ant-btn {
+    padding: 4px 12px;
+    height: auto;
+  }
+  
+  /* 标题尺寸调整 */
+  h1, h2, h3, h4 {
+    margin-bottom: 0.5em;
+  }
+  
+  /* 输入框尺寸调整 */
+  .ant-input, .ant-select {
+    height: 32px;
+  }
+  
+  /* 表格分页器样式 */
+  .ant-pagination {
+    font-size: 12px;
+  }
+  
+  /* 弹窗标题样式 */
+  .ant-modal-title {
+    font-size: 16px;
+  }
+}
+
+/* 针对超小屏幕的样式 */
+@media (max-width: 480px) {
+  /* 进一步缩小间距 */
+  .ant-card-body {
+    padding: 12px;
+  }
+  
+  /* 表格单元格内边距缩小 */
+  .ant-table-cell {
+    padding: 8px;
+  }
+  
+  /* 按钮组垂直排列 */
+  .ant-space.ant-space-vertical {
+    width: 100%;
+  }
+  
+  /* 弹窗底部按钮调整 */
+  .ant-modal-footer {
+    padding: 8px 16px;
+  }
+  
+  /* 标签页标签尺寸调整 */
+  .ant-tabs-tab {
+    padding: 8px 12px;
+  }
+}
+
+/* 针对特定组件的响应式样式 */
+/* 登录/注册页面 */
+@media (max-width: 576px) {
+  .login-form, .register-form {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+/* 节点列表页面 */
+@media (max-width: 768px) {
+  .node-actions .ant-space {
+    flex-wrap: wrap;
+  }
+  
+  .filter-group {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* 首页响应式调整 */
+@media (max-width: 576px) {
+  .hero-section {
+    padding: 40px 16px;
+  }
+  
+  .feature-card {
+    margin-bottom: 16px;
+  }
+} 
