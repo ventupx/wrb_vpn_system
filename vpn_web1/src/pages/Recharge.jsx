@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
-import {
-  Card,
-  Button,
-  Radio,
-  Input,
-  Form,
+import { 
+  Card, 
+  Button, 
+  Radio, 
+  Input, 
+  Form, 
   message,
   Switch,
   Space,
@@ -24,14 +24,13 @@ import {
   CloseCircleOutlined
 } from '@ant-design/icons';
 import request from '../utils/request';
-import { useNavigate } from 'react-router-dom';
-import { generate2022Blake3Aes256GcmKey } from '../utils/password';
+import {  useNavigate } from 'react-router-dom';
 const Recharge = () => {
   const [pollingInterval, setPollingInterval] = useState(null);
   const setBalance = useSetAtom(balanceAtom);
   const navigate = useNavigate();
   const [form] = Form.useForm();
-  const [selectedProtocol, setSelectedProtocol] = useState('Shadowsocks');
+  const [selectedProtocol, setSelectedProtocol] = useState('Http');
   const [loading, setLoading] = useState(false);
   const [selectedPeriod, setSelectedPeriod] = useState(''); // 初始值为空，确保用户必须手动选择
   const [quantity, setQuantity] = useState(1);
@@ -43,7 +42,7 @@ const Recharge = () => {
   const [countdown, setCountdown] = useState(3);
   const [prices, setPrices] = useState({});
   const [periods, setPeriods] = useState([]);
-
+  
   // 获取价格数据
   useEffect(() => {
     const fetchPrices = async () => {
@@ -66,7 +65,7 @@ const Recharge = () => {
         message.error('获取价格失败，请重试');
       }
     };
-
+    
     fetchPrices();
   }, [form]);
 
@@ -103,57 +102,39 @@ const Recharge = () => {
   }, []);
 
   // 生成随机字符串
-  // const generateRandomString = () => {
-  //   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  //   let result = '';
-  //   for (let i = 0; i < 12; i++) {
-  //     result += chars.charAt(Math.floor(Math.random() * chars.length));
-  //   }
-  //   return result;
-  // };
+  const generateRandomString = () => {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    for (let i = 0; i < 12; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+  };
+
   // 处理随机账号密码生成
   const handleGenerateCredentials = () => {
-    // const username = generateRandomString();
-    // const password = generateRandomString();
-    // form.setFieldsValue({
-    //   username,
-    //   password
-    // });
-    const username = generate2022Blake3Aes256GcmKey();
-    const password = generate2022Blake3Aes256GcmKey();
+    const username = generateRandomString();
+    const password = generateRandomString();
     form.setFieldsValue({
       username,
       password
     });
   };
 
-  useEffect(() => {
-    handleProtocolChange('Shadowsocks');
-  }, []);
-
   // 处理协议切换
   const handleProtocolChange = (protocol) => {
     setSelectedProtocol(protocol);
-    if (protocol === 'Shadowsocks') {
-      const username = generate2022Blake3Aes256GcmKey();
-      const password = generate2022Blake3Aes256GcmKey();
-      form.setFieldsValue({
-        username,
-        password
-      });
-    } else {
-      form.setFieldsValue({
-        username: '',
-        password: ''
-      });
-    }
+    form.setFieldsValue({
+      username: '',
+      password: ''
+    });
   };
 
   const onFinish = async () => {
     try {
       // 获取表单数据
       const formData = form.getFieldsValue();
-
+      
       // 检查付费周期是否已选择
       if (!formData.period) {
         message.error('请选择付费周期');
@@ -164,7 +145,7 @@ const Recharge = () => {
         }
         return;
       }
-
+      
       await handlePayment();
     } catch (err) {
       message.error('支付请求失败，请重试');
@@ -172,11 +153,11 @@ const Recharge = () => {
   };
 
   const protocols = [
-    // { label: 'Http', color: '#1890ff' },
-    // { label: 'Socks', color: '#52c41a' },
+    { label: 'Http', color: '#1890ff' },
+    { label: 'Socks', color: '#52c41a' },
     { label: 'Shadowsocks', color: '#722ed1' },
-    // { label: 'Vmess', color: '#fa8c16' },
-    // { label: 'Vless', color: '#f5222d' }
+    { label: 'Vmess', color: '#fa8c16' },
+    { label: 'Vless', color: '#f5222d' }
   ];
 
   const nodeTypes = [
@@ -188,22 +169,22 @@ const Recharge = () => {
   const getPeriods = (nodeType) => {
     const priceType = nodeType === 'normal' ? 'normal' : nodeType === 'live' ? 'live' : 'transit';
     return [
-      {
+      { 
         value: 'monthly',
         label: '月付',
         price: prices[priceType]?.monthly,
         description: '灵活支付，随时更换',
-        perMonth: prices[priceType]?.monthly,
-        totalSave: prices[priceType]?.monthly
+        perMonth: prices[priceType]?.monthly ,
+        totalSave: prices[priceType]?.monthly 
       },
       {
         value: 'quarterly',
         label: '季付',
-        price: prices[priceType]?.quarterly,
+        price: prices[priceType]?.quarterly ,
         save: '15%',
         description: '季度优惠，持续省钱',
-        perMonth: (prices[priceType]?.quarterly / 3).toFixed(1),
-        totalSave: prices[priceType]?.quarterly
+        perMonth: (prices[priceType]?.quarterly / 3).toFixed(1) ,
+        totalSave: prices[priceType]?.quarterly 
       },
       {
         value: 'half_yearly',
@@ -211,20 +192,20 @@ const Recharge = () => {
         price: prices[priceType]?.half_yearly,
         save: '20%',
         description: '超值优惠，省心省钱',
-        perMonth: (prices[priceType]?.half_yearly / 6).toFixed(1),
-        totalSave: prices[priceType]?.half_yearly
+        perMonth: (prices[priceType]?.half_yearly / 6).toFixed(1) ,
+        totalSave: prices[priceType]?.half_yearly 
       },
       {
         value: 'yearly',
         label: '年付',
-        price: prices[priceType]?.yearly,
+        price: prices[priceType]?.yearly ,
         save: '25%',
         description: '最大优惠，一次省心',
-        perMonth: (prices[priceType]?.yearly / 12).toFixed(1),
-        totalSave: prices[priceType]?.yearly
+        perMonth: (prices[priceType]?.yearly / 12).toFixed(1) ,
+        totalSave: prices[priceType]?.yearly 
       }
     ];
-  };
+};
 
   const [finalPrice, setFinalPrice] = useState(null);
   const [originalPrice, setOriginalPrice] = useState(null);
@@ -237,7 +218,7 @@ const Recharge = () => {
       const response = await request.post('/coupon/validate/', {
         coupon_code: couponCode
       });
-
+      
       if (response.valid) {
         const currentPeriod = form.getFieldValue('period');
         const periodData = periods.find(p => p.value === currentPeriod);
@@ -286,7 +267,7 @@ const Recharge = () => {
     if (!value) {
       return;
     }
-
+    
     setSelectedPeriod(value);
     const nodeType = form.getFieldValue('nodeType');
     const periods = getPeriods(nodeType);
@@ -296,10 +277,10 @@ const Recharge = () => {
       message.error('价格数据未加载完成，请稍后再试');
       return;
     }
-
+    
     if (couponCode) {
       try {
-        const response = await request.post('/coupon/validate/', {
+        const response =await request.post('/coupon/validate/', {
           coupon_code: couponCode
         });
         console.log(response);
@@ -328,18 +309,18 @@ const Recharge = () => {
     const nodeType = form.getFieldValue('nodeType');
     const priceData = prices[nodeType === 'normal' ? 'normal' : nodeType === 'live' ? 'live' : 'transit'];
     const couponCode = form.getFieldValue('coupon');
-
+    
     if (!priceData) {
       message.error('价格数据未加载完成，请稍后再试');
       return;
     }
-
+    
     if (couponCode) {
       try {
         const response = await request.post('/coupon/validate/', {
           coupon_code: couponCode
         });
-
+        
         if (response.valid) {
           const discount = response.discount / 100;
           setFinalPrice(Number(priceData[currentPeriod]) * (1 - discount) * value);
@@ -362,7 +343,7 @@ const Recharge = () => {
   const handlePayment = async () => {
     setLoading(true);
     try {
-      const formData = form.getFieldsValue();
+      const formData = form.getFieldsValue(); 
       // 校验表单数据是否有空 (排除 coupon 字段)
       const hasEmpty = Object.entries(formData).some(([key, value]) => {
         if (key === 'coupon') {
@@ -377,7 +358,7 @@ const Recharge = () => {
         setLoading(false);
         return;
       }
-
+      
       if (hasEmpty) {
         message.error('数据不完善，请仔细核对订单');
         setLoading(false);
@@ -387,28 +368,28 @@ const Recharge = () => {
       // 根据支付方式选择不同的接口
       const paymentEndpoint = formData.paymentMethod === 'balance' ? '/balance-payment/' : '/payment/submit/';
       const response = await request.post(paymentEndpoint, formData);
-
+      
       // 兼容不同的API响应格式
       if (response.code == 1 || response.code == 200) {
         if (formData.paymentMethod === 'balance') {
           // 余额支付直接处理结果
           handlePaymentResult('success');
           message.success('支付成功');
-
+          
           return;
         }
 
         // 其他支付方式处理
-        const qrUrl = response.qrcode || response.payurl || response.pay_url ||
-          (response.data && (response.data.qrcode || response.data.payurl || response.data.pay_url));
-
+        const qrUrl = response.qrcode || response.payurl || response.pay_url || 
+                     (response.data && (response.data.qrcode || response.data.payurl || response.data.pay_url));
+        
         if (qrUrl) {
           setQrCodeUrl(qrUrl);
           setPaymentModalVisible(true);
           setPaymentStatus('pending');
-
+          
           const orderNo = response.order_no;
-
+          
           if (orderNo) {
             startPaymentStatusPolling(orderNo);
           } else {
@@ -433,17 +414,17 @@ const Recharge = () => {
     if (pollingInterval) {
       clearInterval(pollingInterval);
     }
-
+    
     // 创建新的轮询定时器
     const newPollingInterval = setInterval(async () => {
       try {
         const response = await request.get(`/payment/status/?order_no=${orderNo}`);
-
+        
         // 检查响应结构，适配不同的API响应格式
         if (response.code === 200 || response.code === 1) {
           // 检查状态字段，可能在status或data.status中
           const status = response.status || (response.data && response.data.status);
-
+          
           if (status === 'success' || status === 'paid') {
             // 重新调用登录接口更新用户信息
             try {
@@ -471,12 +452,12 @@ const Recharge = () => {
   useEffect(() => {
     const fetchBalance = async () => {
       try {
-        if (isLogin) {
+        if (isLogin){
           const yueResponse = await request.get(`/user-balance/`);
           if (yueResponse.code === 200) {
             updateBalance(setBalance, yueResponse.data.balance);
           }
-        }
+        } 
       } catch (error) {
         console.error('Failed to fetch balance:', error);
       }
@@ -497,14 +478,14 @@ const Recharge = () => {
     };
   }, [paymentModalVisible, pollingInterval, setBalance]);
   // 处理支付结果
-  const handlePaymentResult = async (status) => {
-    if (isLogin) {
+  const handlePaymentResult = async(status) => {
+    if (isLogin){
       const yueResponse = await request.get(`/user-balance/`);
       if (yueResponse.code === 200) {
         updateBalance(setBalance, yueResponse.data.balance);
       }
-    }
-
+    } 
+    
     setPaymentStatus(status);
     if (status === 'success') {
       let timer = 3;
@@ -541,7 +522,7 @@ const Recharge = () => {
             layout="vertical"
             onFinish={onFinish}
             initialValues={{
-              protocol: 'Shadowsocks',
+              protocol: 'Http',
               region: countries[0]?.value,
               nodeType: 'normal',
               // 移除period默认值，强制用户手动选择
@@ -556,10 +537,10 @@ const Recharge = () => {
                 <GlobalOutlined className="mr-2 text-blue-500" />
                 节点选择
               </h2>
-
+              
               <div className="space-y-6">
                 {/* 节点国家 */}
-                <Form.Item
+                <Form.Item 
                   name="region"
                   label={<span className="text-lg font-medium">节点国家</span>}
                   rules={[{ required: true, message: '请选择节点国家' }]} // 可选，增加校验
@@ -567,8 +548,8 @@ const Recharge = () => {
                   <Radio.Group size="large">
                     <Space wrap className="w-full">
                       {countries.map(region => (
-                        <Radio.Button
-                          key={region.value}
+                        <Radio.Button 
+                          key={region.value} 
                           value={region.value}
                           className="h-16 w-40 flex items-center justify-center hover:shadow-md transition-shadow"
                         >
@@ -582,20 +563,20 @@ const Recharge = () => {
                 </Form.Item>
 
                 {/* 节点类型 */}
-                <Form.Item
+                <Form.Item 
                   name="nodeType"
                   label={<span className="text-lg font-medium">节点类型</span>}
                 >
                   <Radio.Group size="large" onChange={(e) => {
-                    // 在这里添加自定义逻辑
-                    const nodeType = e.target.value;
-                    setPeriods(getPeriods(nodeType));
-                    handlePeriodChange(form.getFieldValue('period'))
-                  }}>
+                      // 在这里添加自定义逻辑
+                      const nodeType = e.target.value;
+                      setPeriods(getPeriods(nodeType));
+                      handlePeriodChange(form.getFieldValue('period'))
+                    }}>
                     <Space wrap className="w-full">
                       {nodeTypes.map(type => (
-                        <Radio.Button
-                          key={type.value}
+                        <Radio.Button 
+                          key={type.value} 
                           value={type.value}
                           className="h-16 w-40 flex items-center justify-center hover:shadow-md transition-shadow"
                         >
@@ -619,18 +600,18 @@ const Recharge = () => {
 
               <div className="space-y-6">
                 {/* 协议选择 */}
-                <Form.Item
+                <Form.Item 
                   name="protocol"
                   label={<span className="text-lg font-medium">协议选择</span>}
                 >
                   <Radio.Group onChange={(e) => handleProtocolChange(e.target.value)} size="large">
                     <Space wrap className="w-full flex-wrap">
                       {protocols.map(protocol => (
-                        <Radio.Button
-                          key={protocol.label}
+                        <Radio.Button 
+                          key={protocol.label} 
                           value={protocol.label}
                           className="h-16 w-40 flex items-center justify-center hover:shadow-md transition-shadow text-lg"
-                          style={{
+                          style={{ 
                             borderColor: selectedProtocol === protocol.label ? protocol.color : undefined,
                             color: selectedProtocol === protocol.label ? protocol.color : undefined
                           }}
@@ -647,8 +628,8 @@ const Recharge = () => {
                   <div className="space-y-4">
                     <div className="flex justify-between items-center">
                       <span className="text-lg font-medium">账号设置</span>
-                      <Button
-                        type="primary"
+                      <Button 
+                        type="primary" 
                         icon={<ReloadOutlined />}
                         onClick={handleGenerateCredentials}
                         className="bg-blue-500 h-10 text-base"
@@ -680,7 +661,6 @@ const Recharge = () => {
                       ]}
                     >
                       <Input
-                        disabled={selectedProtocol === 'Shadowsocks'}
                         placeholder="请输入密码"
                         className="h-12 text-lg"
                       />
@@ -695,7 +675,7 @@ const Recharge = () => {
                 >
                   <div className="flex justify-between items-center pt-4">
                     <span className="text-lg font-medium">是否需要节点中转</span>
-                    <Switch
+                    <Switch 
                       defaultChecked={false}
                       onChange={(checked) => {
                         form.setFieldValue('udpForward', checked);
@@ -715,7 +695,7 @@ const Recharge = () => {
                 <span className="mr-2">⚠️</span>
                 <span>请务必选择一个付费周期，否则无法提交订单</span>
               </div>
-              <Form.Item
+              <Form.Item 
                 name="period"
                 rules={[{ required: true, message: '请选择付费周期' }]}
               >
@@ -729,8 +709,8 @@ const Recharge = () => {
                           handlePeriodChange(period.value);
                         }}
                         className={`relative cursor-pointer rounded-xl transition-all
-                          ${selectedPeriod === period.value ?
-                            'ring-2 ring-blue-500 bg-blue-50' :
+                          ${selectedPeriod === period.value ? 
+                            'ring-2 ring-blue-500 bg-blue-50' : 
                             'bg-white hover:bg-gray-50 hover:shadow-md border border-gray-100 border-dashed border-orange-400'
                           }`}
                       >
@@ -739,7 +719,7 @@ const Recharge = () => {
                           name="period"
                           value={period.value}
                           checked={selectedPeriod === period.value}
-                          onChange={() => { }}
+                          onChange={() => {}}
                           className="hidden"
                         />
                         <div className="p-6">
@@ -789,7 +769,7 @@ const Recharge = () => {
               {/* 购买数量 */}
               <div className="mt-6">
                 <h3 className="text-lg font-medium mb-4">选择购买数量</h3>
-                <Form.Item
+                <Form.Item 
                   name="quantity"
                   initialValue={1}
                   rules={[
@@ -814,8 +794,8 @@ const Recharge = () => {
                 优惠码
               </h2>
               <Form.Item name="coupon">
-                <Input
-                  placeholder="请输入优惠码（如有）"
+                <Input 
+                  placeholder="请输入优惠码（如有）" 
                   className="h-12 text-lg"
                   onChange={handleCouponChange}
                   onBlur={handleCouponBlur}
@@ -887,7 +867,7 @@ const Recharge = () => {
               disabled={!isLogin}
               className="w-full h-16 text-xl bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 border-0 shadow-lg"
             >
-              {isLogin ? '提交订单' : '请先登录'}
+              {isLogin? '提交订单' : '请先登录'}
             </Button>
           </Form>
         </div>

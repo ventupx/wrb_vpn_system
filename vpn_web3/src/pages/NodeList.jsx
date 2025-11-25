@@ -56,10 +56,9 @@ const NodeList = () => {
     return {host:data.host,port:data.port};
   }
   const generateShareLink = (node, index = null) => {
-    const { protocol,  node_password, uuid, country, expiry_time,host_config} = node;
+    const { protocol,  node_password, uuid, country, expiry_time } = node;
     let hosts = getHost(node).host;
     let ports = getHost(node).port;
-    const host_config_json = JSON.parse(host_config);
     // 格式化国家和到期时间
     const expiryDate = new Date(expiry_time).toISOString().split('T')[0];
     let formattedLabel = `${country || 'Unknown'}${expiryDate.split('-')[1]}-${expiryDate.split('-')[2]}`;
@@ -71,13 +70,8 @@ const NodeList = () => {
     
     switch(protocol.toLowerCase()) {
       case 'shadowsocks': {
-        const type = host_config_json.panel_type;
-        if (type === 'x-ui') {
-          return `ss://2022-blake3-aes-256-gcm:${node_password}@${hosts}:${ports}#${formattedLabel}`;
-        } else {
-          const ssConfig = `2022-blake3-aes-256-gcm:${node_password}:${node_password}`;
-          return `ss://${CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse(ssConfig))}@${hosts}:${ports}?type=tcp#${nodeDisplayName}`;
-        }    
+        const ssConfig = `aes-256-gcm:${node_password}@${hosts}:${ports}`;
+        return `ss://${CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse(ssConfig))}#${formattedLabel}`;
       }
       case 'vmess': {
         const vmessConfig = {
@@ -663,14 +657,14 @@ const NodeList = () => {
                 </h3>
                 {['vmess', 'vless'].includes(currentNode.protocol.toLowerCase()) && (
                   <div className="mb-4 bg-white p-3 rounded-lg">
-                    <p className="font-medium text-gray-700">加密方式：none</p>
+                    <p className="font-medium text-gray-700">加密方式：aes-256-gcm</p>
                     <p className="font-medium text-gray-700">UUID：{currentNode.uuid}</p>
                     <p className="text-sm text-gray-600 break-all"></p>
                   </div>
                 )}
                 {['shadowsocks'].includes(currentNode.protocol.toLowerCase()) && (
                   <div className="mb-4 bg-white p-3 rounded-lg">
-                    <p className="font-medium text-gray-700">加密方式：2022-blake3-aes-256-gcm</p>
+                    <p className="font-medium text-gray-700">加密方式：aes-256-gcm</p>
                     <p className="font-medium text-gray-700">密码：{currentNode.node_password}</p>
                   </div>
                 )}

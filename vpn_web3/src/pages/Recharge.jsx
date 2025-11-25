@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import {
-  Button,
-  Radio,
-  Input,
+import { 
+  Button, 
+  Radio, 
+  Input, 
   message,
   Switch,
   InputNumber,
@@ -12,7 +12,6 @@ import {
 import { useSetAtom } from 'jotai';
 import { useAtomValue } from 'jotai';
 import { balanceAtom, isLoginAtom } from '../jotai';
-import { generate2022Blake3Aes256GcmKey } from '../utils/password';
 import {
   AlipayOutlined,
   WechatOutlined,
@@ -42,24 +41,24 @@ const Recharge = () => {
   const [periods, setPeriods] = useState([]);
   const [finalPrice, setFinalPrice] = useState(null);
   const [originalPrice, setOriginalPrice] = useState(null);
-
+  
   // 全局状态对象，保存所有步骤的选择
   const [orderData, setOrderData] = useState({
-    protocol: 'Shadowsocks',
+    protocol: 'Http',
     nodeType: 'normal', // 默认选中店铺线路
     region: null, // 不选中节点国家
-    username: generate2022Blake3Aes256GcmKey(),
-    password: generate2022Blake3Aes256GcmKey(),
+    username: '',
+    password: '',
     udpForward: false,
     period: 'monthly',
     quantity: 1,
     paymentMethod: 'balance',
     coupon: ''
   });
-
+  
   // 新增当前步骤状态
   const [currentStep, setCurrentStep] = useState(1);
-
+  
   // 定义步骤数据
   const steps = [
     {
@@ -106,7 +105,7 @@ const Recharge = () => {
         message.error('获取价格失败，请重试');
       }
     };
-
+    
     fetchPrices();
   }, []);
 
@@ -145,19 +144,19 @@ const Recharge = () => {
   }, []);
 
   // 生成随机字符串
-  // const generateRandomString = () => {
-  //   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  //   let result = '';
-  //   for (let i = 0; i < 12; i++) {
-  //     result += chars.charAt(Math.floor(Math.random() * chars.length));
-  //   }
-  //   return result;
-  // };
+  const generateRandomString = () => {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    for (let i = 0; i < 12; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+  };
 
   // 处理随机账号密码生成
   const handleGenerateCredentials = () => {
-    const username = generate2022Blake3Aes256GcmKey();
-    const password = generate2022Blake3Aes256GcmKey();
+    const username = generateRandomString();
+    const password = generateRandomString();
     setOrderData(prev => ({
       ...prev,
       username,
@@ -168,14 +167,12 @@ const Recharge = () => {
   // 处理协议切换
   const handleProtocolChange = (protocol) => {
     // Vmess和Vless不需要用户名和密码字段
-    if (protocol === 'Shadowsocks') {
-      const username = generate2022Blake3Aes256GcmKey();
-      const password = generate2022Blake3Aes256GcmKey();
+    if (protocol === 'Vmess' || protocol === 'Vless') {
       setOrderData(prev => ({
         ...prev,
         protocol,
-        username,
-        password
+        username: '',
+        password: ''
       }));
     } else {
       setOrderData(prev => ({
@@ -190,13 +187,13 @@ const Recharge = () => {
   const onFinish = async () => {
     try {
       console.log("提交的订单数据:", orderData);
-
+      
       // 检查付费周期是否已选择
       if (!orderData.period) {
         message.error('请选择付费周期');
         return;
       }
-
+      
       await handlePayment();
     } catch (error) {
       console.error("支付请求失败:", error);
@@ -207,22 +204,22 @@ const Recharge = () => {
   const getPeriods = (nodeType) => {
     const priceType = nodeType === 'normal' ? 'normal' : nodeType === 'live' ? 'live' : 'transit';
     return [
-      {
+      { 
         value: 'monthly',
         label: '月付',
         price: prices[priceType]?.monthly,
         description: '灵活支付，随时更换',
-        perMonth: prices[priceType]?.monthly,
-        totalSave: prices[priceType]?.monthly
+        perMonth: prices[priceType]?.monthly ,
+        totalSave: prices[priceType]?.monthly 
       },
       {
         value: 'quarterly',
         label: '季付',
-        price: prices[priceType]?.quarterly,
+        price: prices[priceType]?.quarterly ,
         save: '15%',
         description: '季度优惠，持续省钱',
-        perMonth: (prices[priceType]?.quarterly / 3).toFixed(1),
-        totalSave: prices[priceType]?.quarterly
+        perMonth: (prices[priceType]?.quarterly / 3).toFixed(1) ,
+        totalSave: prices[priceType]?.quarterly 
       },
       {
         value: 'half_yearly',
@@ -230,17 +227,17 @@ const Recharge = () => {
         price: prices[priceType]?.half_yearly,
         save: '20%',
         description: '超值优惠，省心省钱',
-        perMonth: (prices[priceType]?.half_yearly / 6).toFixed(1),
-        totalSave: prices[priceType]?.half_yearly
+        perMonth: (prices[priceType]?.half_yearly / 6).toFixed(1) ,
+        totalSave: prices[priceType]?.half_yearly 
       },
       {
         value: 'yearly',
         label: '年付',
-        price: prices[priceType]?.yearly,
+        price: prices[priceType]?.yearly ,
         save: '25%',
         description: '最大优惠，一次省心',
-        perMonth: (prices[priceType]?.yearly / 12).toFixed(1),
-        totalSave: prices[priceType]?.yearly
+        perMonth: (prices[priceType]?.yearly / 12).toFixed(1) ,
+        totalSave: prices[priceType]?.yearly 
       }
     ];
   };
@@ -252,15 +249,15 @@ const Recharge = () => {
       const response = await request.post('/coupon/validate/', {
         coupon_code: couponCode
       });
-
+      
       const currentPeriod = orderData.period;
       const periodData = periods.find(p => p.value === currentPeriod);
-
+      
       if (!periodData) {
         message.error('请先选择付费周期');
         return;
       }
-
+      
       if (response.valid) {
         const discount = response.discount / 100;
         setFinalPrice(Number(periodData.price) * (1 - discount) * orderData.quantity);
@@ -278,8 +275,8 @@ const Recharge = () => {
 
   const handleCouponChange = (e) => {
     const couponCode = e.target.value;
-    setOrderData(prev => ({ ...prev, coupon: couponCode }));
-
+    setOrderData(prev => ({...prev, coupon: couponCode}));
+    
     if (!couponCode) {
       setFinalPrice(null);
       const currentPeriod = orderData.period;
@@ -311,8 +308,8 @@ const Recharge = () => {
     if (!value) {
       return;
     }
-
-    setOrderData(prev => ({ ...prev, period: value }));
+    
+    setOrderData(prev => ({...prev, period: value}));
     const nodeType = orderData.nodeType;
     const periods = getPeriods(nodeType);
     const periodData = periods.find(p => p.value === value);
@@ -321,7 +318,7 @@ const Recharge = () => {
       message.error('价格数据未加载完成，请稍后再试');
       return;
     }
-
+    
     if (couponCode) {
       try {
         const response = await request.post('/coupon/validate/', {
@@ -348,24 +345,24 @@ const Recharge = () => {
 
   // 处理数量变更
   const handleQuantityChange = async (value) => {
-    setOrderData(prev => ({ ...prev, quantity: value }));
-
+    setOrderData(prev => ({...prev, quantity: value}));
+    
     const currentPeriod = orderData.period;
     const nodeType = orderData.nodeType;
     const priceData = prices[nodeType === 'normal' ? 'normal' : nodeType === 'live' ? 'live' : 'transit'];
     const couponCode = orderData.coupon;
-
+    
     if (!priceData) {
       message.error('价格数据未加载完成，请稍后再试');
       return;
     }
-
+    
     if (couponCode) {
       try {
         const response = await request.post('/coupon/validate/', {
           coupon_code: couponCode
         });
-
+        
         if (response.valid) {
           const discount = response.discount / 100;
           setFinalPrice(Number(priceData[currentPeriod]) * (1 - discount) * value);
@@ -393,21 +390,21 @@ const Recharge = () => {
         if (key === 'coupon') {
           return false; // 忽略 coupon 字段
         }
-
+        
         // 根据协议类型检查必填字段
-        if (key === 'username' &&
-          (orderData.protocol === 'Shadowsocks' ||
-            orderData.protocol === 'Vmess' ||
-            orderData.protocol === 'Vless')) {
+        if (key === 'username' && 
+            (orderData.protocol === 'Shadowsocks' || 
+             orderData.protocol === 'Vmess' || 
+             orderData.protocol === 'Vless')) {
           return false;  // 这些协议不需要用户名
         }
-
-        if (key === 'password' &&
-          (orderData.protocol === 'Vmess' ||
-            orderData.protocol === 'Vless')) {
+        
+        if (key === 'password' && 
+            (orderData.protocol === 'Vmess' || 
+             orderData.protocol === 'Vless')) {
           return false;  // 这些协议不需要密码
         }
-
+        
         return value === undefined || value === null || value === '';
       });
 
@@ -419,7 +416,7 @@ const Recharge = () => {
         setLoading(false);
         return;
       }
-
+      
       if (hasEmpty) {
         message.error('数据不完善，请仔细核对订单');
         setLoading(false);
@@ -429,28 +426,28 @@ const Recharge = () => {
       // 根据支付方式选择不同的接口
       const paymentEndpoint = orderData.paymentMethod === 'balance' ? '/balance-payment/' : '/payment/submit/';
       const response = await request.post(paymentEndpoint, orderData);
-
+      
       // 兼容不同的API响应格式
       if (response.code == 1 || response.code == 200) {
         if (orderData.paymentMethod === 'balance') {
           // 余额支付直接处理结果
           handlePaymentResult('success');
           message.success('支付成功');
-
+          
           return;
         }
 
         // 其他支付方式处理
-        const qrUrl = response.qrcode || response.payurl || response.pay_url ||
-          (response.data && (response.data.qrcode || response.data.payurl || response.data.pay_url));
-
+        const qrUrl = response.qrcode || response.payurl || response.pay_url || 
+                     (response.data && (response.data.qrcode || response.data.payurl || response.data.pay_url));
+        
         if (qrUrl) {
           setQrCodeUrl(qrUrl);
           setPaymentModalVisible(true);
           setPaymentStatus('pending');
-
+          
           const orderNo = response.order_no;
-
+          
           if (orderNo) {
             startPaymentStatusPolling(orderNo);
           } else {
@@ -475,17 +472,17 @@ const Recharge = () => {
     if (pollingInterval) {
       clearInterval(pollingInterval);
     }
-
+    
     // 创建新的轮询定时器
     const newPollingInterval = setInterval(async () => {
       try {
         const response = await request.get(`/payment/status/?order_no=${orderNo}`);
-
+        
         // 检查响应结构，适配不同的API响应格式
         if (response.code === 200 || response.code === 1) {
           // 检查状态字段，可能在status或data.status中
           const status = response.status || (response.data && response.data.status);
-
+          
           if (status === 'success' || status === 'paid') {
             // 重新调用登录接口更新用户信息
             try {
@@ -513,13 +510,13 @@ const Recharge = () => {
   useEffect(() => {
     const fetchBalance = async () => {
       try {
-        if (isLogin) {
+        if (isLogin){
           const yueResponse = await request.get(`/user-balance/`);
           if (yueResponse.code === 200) {
             localStorage.setItem('balance', yueResponse.data.balance);
             setBalance(yueResponse.data.balance);
           }
-        }
+        } 
       } catch (error) {
         console.error('Failed to fetch balance:', error);
       }
@@ -540,15 +537,15 @@ const Recharge = () => {
     };
   }, [paymentModalVisible, pollingInterval, setBalance]);
   // 处理支付结果
-  const handlePaymentResult = async (status) => {
-    if (isLogin) {
+  const handlePaymentResult = async(status) => {
+    if (isLogin){
       const yueResponse = await request.get(`/user-balance/`);
       if (yueResponse.code === 200) {
         localStorage.setItem('balance', yueResponse.data.balance);
         setBalance(yueResponse.data.balance);
       }
-    }
-
+    } 
+    
     setPaymentStatus(status);
     if (status === 'success') {
       let timer = 3;
@@ -571,8 +568,8 @@ const Recharge = () => {
 
   // 处理表单值变更
   const handleFormChange = (field, value) => {
-    setOrderData(prev => ({ ...prev, [field]: value }));
-
+    setOrderData(prev => ({...prev, [field]: value}));
+    
     // 特殊情况处理
     if (field === 'nodeType') {
       const periods = getPeriods(value);
@@ -584,9 +581,9 @@ const Recharge = () => {
   // 处理下一步
   const handleNext = () => {
     let canProceed = true;
-
+    
     // 根据当前步骤验证必填字段
-    switch (currentStep) {
+    switch(currentStep) {
       case 1:
         if (!orderData.region || !orderData.nodeType) {
           message.error('请完成节点选择');
@@ -598,8 +595,8 @@ const Recharge = () => {
           message.error('请选择协议');
           canProceed = false;
         } else if (
-          ((orderData.protocol === 'Http' || orderData.protocol === 'Socks') &&
-            (!orderData.username || !orderData.password)) ||
+          ((orderData.protocol === 'Http' || orderData.protocol === 'Socks') && 
+           (!orderData.username || !orderData.password)) ||
           (orderData.protocol === 'Shadowsocks' && !orderData.password)
         ) {
           // Vmess和Vless不需要验证用户名和密码
@@ -615,7 +612,7 @@ const Recharge = () => {
         }
         break;
     }
-
+    
     if (canProceed && currentStep < 4) {
       setCurrentStep(currentStep + 1);
     }
@@ -630,26 +627,27 @@ const Recharge = () => {
 
   // 渲染步骤内容
   const renderStepContent = () => {
-    switch (currentStep) {
+    switch(currentStep) {
       case 1:
         return (
           <div className="p-8">
             <h2 className="text-xl font-semibold text-gray-800 mb-6">节点国家</h2>
             <div className="grid grid-cols-4 gap-4 mb-8">
               {countries.map((country) => (
-                <div
+                <div 
                   key={country.value}
-                  className={`border rounded-lg p-3 text-center cursor-pointer transition-all ${orderData.region === country.value
-                      ? 'border-red-500 bg-red-50 text-red-600'
+                  className={`border rounded-lg p-3 text-center cursor-pointer transition-all ${
+                    orderData.region === country.value 
+                      ? 'border-red-500 bg-red-50 text-red-600' 
                       : 'border-gray-200 hover:border-red-300'
-                    }`}
+                  }`}
                   onClick={() => handleFormChange('region', country.value)}
                 >
                   {country.label}
                 </div>
               ))}
             </div>
-
+            
             <h2 className="text-xl font-semibold text-gray-800 mb-6">节点类型</h2>
             <div className="grid grid-cols-3 gap-4">
               {[
@@ -659,10 +657,11 @@ const Recharge = () => {
               ].map((type) => (
                 <div
                   key={type.value}
-                  className={`flex items-center justify-center border p-4 rounded-lg cursor-pointer transition-all ${orderData.nodeType === type.value
-                      ? 'border-red-500 bg-red-50 text-red-600'
+                  className={`flex items-center justify-center border p-4 rounded-lg cursor-pointer transition-all ${
+                    orderData.nodeType === type.value 
+                      ? 'border-red-500 bg-red-50 text-red-600' 
                       : 'border-gray-200 hover:border-red-300'
-                    }`}
+                  }`}
                   onClick={() => handleFormChange('nodeType', type.value)}
                 >
                   <div className="text-xl mr-2">{type.icon}</div>
@@ -677,25 +676,25 @@ const Recharge = () => {
           <div className="p-8">
             <h2 className="text-xl font-semibold text-gray-800 mb-6">选择协议</h2>
             <div className="mb-8">
-              <Radio.Group
-                className="w-full"
-                buttonStyle="solid"
+              <Radio.Group 
+                className="w-full" 
+                buttonStyle="solid" 
                 value={orderData.protocol}
                 onChange={(e) => handleProtocolChange(e.target.value)}
               >
                 <div className="flex flex-wrap gap-4">
                   {[
-                    // { label: 'Http', color: '#e6484f' },
-                    // { label: 'Socks', color: '#e6484f' },
+                    { label: 'Http', color: '#e6484f' },
+                    { label: 'Socks', color: '#e6484f' },
                     { label: 'Shadowsocks', color: '#e6484f' },
-                    // { label: 'Vmess', color: '#e6484f' },
-                    // { label: 'Vless', color: '#e6484f' }
+                    { label: 'Vmess', color: '#e6484f' },
+                    { label: 'Vless', color: '#e6484f' }
                   ].map((protocol) => (
                     <Radio.Button
                       key={protocol.label}
                       value={protocol.label}
                       className="flex items-center justify-center h-10 px-5"
-                      style={{
+                      style={{ 
                         borderColor: orderData.protocol === protocol.label ? protocol.color : '#d9d9d9',
                         minWidth: '100px',
                         borderRadius: '4px'
@@ -707,13 +706,13 @@ const Recharge = () => {
                 </div>
               </Radio.Group>
             </div>
-
+            
             <div className="mb-8">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-semibold text-gray-800">账号设置</h2>
                 {(orderData.protocol === 'Shadowsocks' || orderData.protocol === 'Socks' || orderData.protocol === 'Http') && (
-                  <Button
-                    type="link"
+                  <Button 
+                    type="link" 
                     onClick={handleGenerateCredentials}
                     icon={<ReloadOutlined />}
                     style={{ color: '#e6484f' }}
@@ -722,13 +721,13 @@ const Recharge = () => {
                   </Button>
                 )}
               </div>
-
+              
               <div className="space-y-4">
                 {(orderData.protocol === 'Socks' || orderData.protocol === 'Http') && (
                   <div className="form-item">
                     <label className="block text-sm font-medium text-gray-700 mb-1">用户名</label>
-                    <Input
-                      placeholder="请输入用户名"
+                    <Input 
+                      placeholder="请输入用户名" 
                       value={orderData.username}
                       onChange={(e) => handleFormChange('username', e.target.value)}
                     />
@@ -737,9 +736,8 @@ const Recharge = () => {
                 {(orderData.protocol === 'Shadowsocks' || orderData.protocol === 'Socks' || orderData.protocol === 'Http') && (
                   <div className="form-item">
                     <label className="block text-sm font-medium text-gray-700 mb-1">密码</label>
-                    <Input
+                    <Input 
                       placeholder="请输入密码"
-                      disabled={orderData.protocol === 'Shadowsocks'}
                       value={orderData.password}
                       onChange={(e) => handleFormChange('password', e.target.value)}
                     />
@@ -752,17 +750,17 @@ const Recharge = () => {
                 )}
               </div>
             </div>
-
+            
             <div>
               <h2 className="text-xl font-semibold text-gray-800 mb-4">附加选项</h2>
               <div className="flex items-center">
-                <Switch
-                  checkedChildren="开启"
+                <Switch 
+                  checkedChildren="开启" 
                   unCheckedChildren="关闭"
                   checked={orderData.udpForward}
                   onChange={(checked) => handleFormChange('udpForward', checked)}
                   style={{ backgroundColor: orderData.udpForward ? '#e6484f' : undefined }}
-                />
+                /> 
                 <span className="ml-2">UDP中转</span>
               </div>
             </div>
@@ -772,19 +770,20 @@ const Recharge = () => {
         return (
           <div className="p-8">
             <h2 className="text-xl font-semibold text-gray-800 mb-6">选择周期</h2>
-            <Radio.Group
-              className="w-full mb-8"
+            <Radio.Group 
+              className="w-full mb-8" 
               value={orderData.period}
               onChange={(e) => handlePeriodChange(e.target.value)}
             >
               <div className="grid grid-cols-4 gap-4">
                 {periods.map((period) => (
-                  <div
+                  <div 
                     key={period.value}
-                    className={`border rounded-md p-4 cursor-pointer transition-all ${orderData.period === period.value
-                        ? 'border-red-500 bg-red-50'
+                    className={`border rounded-md p-4 cursor-pointer transition-all ${
+                      orderData.period === period.value 
+                        ? 'border-red-500 bg-red-50' 
                         : 'border-gray-200 hover:border-red-300'
-                      }`}
+                    }`}
                     onClick={() => handlePeriodChange(period.value)}
                   >
                     <div className="font-medium">{period.label}</div>
@@ -797,12 +796,12 @@ const Recharge = () => {
                 ))}
               </div>
             </Radio.Group>
-
+            
             <div>
               <h2 className="text-xl font-semibold text-gray-800 mb-4">购买数量</h2>
-              <InputNumber
-                min={1}
-                max={100}
+              <InputNumber 
+                min={1} 
+                max={100} 
                 precision={0}
                 value={orderData.quantity}
                 onChange={(value) => handleQuantityChange(value)}
@@ -816,17 +815,18 @@ const Recharge = () => {
         return (
           <div className="p-8">
             <h2 className="text-xl font-semibold text-gray-800 mb-6">选择支付方式</h2>
-            <Radio.Group
+            <Radio.Group 
               className="w-full mb-8"
               value={orderData.paymentMethod}
               onChange={(e) => handleFormChange('paymentMethod', e.target.value)}
             >
               <div className="grid grid-cols-3 gap-4">
                 <div
-                  className={`flex items-center justify-center border p-4 rounded-lg cursor-pointer transition-all ${orderData.paymentMethod === 'balance'
-                      ? 'border-red-500 bg-red-50'
+                  className={`flex items-center justify-center border p-4 rounded-lg cursor-pointer transition-all ${
+                    orderData.paymentMethod === 'balance' 
+                      ? 'border-red-500 bg-red-50' 
                       : 'border-gray-200 hover:border-red-300'
-                    }`}
+                  }`}
                   onClick={() => handleFormChange('paymentMethod', 'balance')}
                 >
                   <WalletOutlined className="text-xl mr-2" />
@@ -835,11 +835,11 @@ const Recharge = () => {
                 {/* 这里可以添加其他支付方式 */}
               </div>
             </Radio.Group>
-
+            
             <div className="mb-8">
               <h2 className="text-xl font-semibold text-gray-800 mb-4">优惠码</h2>
-              <Input
-                placeholder="如有优惠码请输入"
+              <Input 
+                placeholder="如有优惠码请输入" 
                 value={orderData.coupon}
                 onChange={handleCouponChange}
                 onBlur={handleCouponBlur}
@@ -884,7 +884,7 @@ const Recharge = () => {
                   <div key={index} className="flex-1 flex flex-col items-center">
                     <div className="flex items-center w-full">
                       <div className={`w-8 h-8 flex items-center justify-center rounded-full 
-                        ${currentStep === index + 1 ? 'bg-red-500 text-white' :
+                        ${currentStep === index + 1 ? 'bg-red-500 text-white' : 
                           currentStep > index + 1 ? 'bg-gray-300' : 'bg-gray-200'}`}>
                         {currentStep > index + 1 ? <CheckOutlined /> : index + 1}
                       </div>
@@ -915,14 +915,14 @@ const Recharge = () => {
               {currentStep === 3 && <ClockCircleOutlined className="text-4xl" />}
               {currentStep === 4 && <WalletOutlined className="text-4xl" />}
             </div>
-
+            
             <h2 className="text-3xl font-bold mb-3">
               {currentStep === 1 && '节点选择'}
               {currentStep === 2 && '协议设置'}
               {currentStep === 3 && '付费周期'}
               {currentStep === 4 && '支付方式'}
             </h2>
-
+            
             <p className="text-white/80">
               {currentStep === 1 && '选择您需要的节点国家和类型，我们提供全球范围内的高速稳定节点。'}
               {currentStep === 2 && '选择合适的协议和账号信息以配置您的连接。'}
@@ -946,7 +946,7 @@ const Recharge = () => {
                   上一步
                 </Button>
               )}
-
+              
               {currentStep < 4 ? (
                 <Button
                   type="primary"

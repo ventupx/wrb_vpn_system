@@ -148,7 +148,7 @@ const DomainManagement: React.FC = () => {
     try {
         const values = await form.validateFields();
         const { domain, ip } = values;
-      const selectedIpOption = ipOptions.find(option => option.id === ip);
+      const selectedIpOption = ipOptions.find(option => option.connect_host === ip);
       const name = selectedIpOption ? selectedIpOption.name : ip;
       
       const data = {
@@ -345,7 +345,7 @@ const DomainManagement: React.FC = () => {
               }
             >
               {ipOptions.map((option) => (
-                <Option key={option.id} value={option.id} label={option.name}>
+                <Option key={option.connect_host} value={option.connect_host} label={option.name}>
                   {option.name}
                 </Option>
               ))}

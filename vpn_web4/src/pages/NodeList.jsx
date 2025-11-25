@@ -50,11 +50,9 @@ const NodeList = () => {
   }
 
   const generateShareLink = (node, index = 0) => {
-    const { protocol, node_password, uuid, country, expiry_time,host_config } = node;
+    const { protocol, node_password, uuid, country, expiry_time } = node;
     let hosts = getHost(node).host;
     let ports = getHost(node).port;
-    const host_config_json = JSON.parse(host_config);
-
     
     // 格式化到期时间为年月日格式
     const formatExpiryDate = (dateStr) => {
@@ -70,13 +68,8 @@ const NodeList = () => {
     
     switch(protocol.toLowerCase()) {
       case 'shadowsocks': {
-        const type = host_config_json.panel_type;
-        if (type === 'x-ui') {
-          return `ss://2022-blake3-aes-256-gcm:${node_password}@${hosts}:${ports}#${countryWithExpiry}`;
-        } else {
-          const ssConfig = `2022-blake3-aes-256-gcm:${node_password}:${node_password}`;
-          return `ss://${CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse(ssConfig))}@${hosts}:${ports}?type=tcp#${nodeDisplayName}`;
-        }      
+        const ssConfig = `aes-256-gcm:${node_password}@${hosts}:${ports}`;
+        return `ss://${CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse(ssConfig))}#${countryWithExpiry}`;
       }
       case 'vmess': {
         const vmessConfig = {
@@ -637,7 +630,7 @@ const NodeList = () => {
                 )}
                 {['shadowsocks'].includes(currentNode.protocol.toLowerCase()) && (
                   <div className="mb-4 bg-white p-3 rounded-lg">
-                    <p className="font-medium text-gray-700">加密方式：2022-blake3-aes-256-gcm</p>
+                    <p className="font-medium text-gray-700">加密方式：aes-256-gcm</p>
                     <p className="font-medium text-gray-700">密码：{currentNode.node_password}</p>
                   </div>
                 )}
