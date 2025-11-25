@@ -302,11 +302,10 @@ const NodeList: React.FC = () => {
 
   // 生成分享链接
   const generateShareUrl = (node: NodeInfo, sequenceNumber: number | null = null) => {
-    const { protocol, node_password, uuid, expiry_time, host_config } = node;
-    const hosts = getHost(node).host;
-    const ports = getHost(node).port;
-    const host_config_json = JSON.parse(host_config);
-    console.log(host_config_json);
+    const { protocol, node_password, uuid, expiry_time } = node;
+    let hosts = getHost(node).host;
+    let ports = getHost(node).port;
+  
     
     // 格式化到期时间为年月日
     const expiryDate = expiry_time ? expiry_time.split('T')[0] : '';
@@ -319,13 +318,8 @@ const NodeList: React.FC = () => {
     
     switch(protocol.toLowerCase()) {
       case 'shadowsocks': {
-        const type = host_config_json.panel_type;
-        if (type === 'x-ui') {
-          return `ss://2022-blake3-aes-256-gcm:${node_password}@${hosts}:${ports}#${nodeDisplayName}`;
-        } else {
-          const ssConfig = `2022-blake3-aes-256-gcm:${node_password}:${node_password}`;
-          return `ss://${CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse(ssConfig))}@${hosts}:${ports}?type=tcp#${nodeDisplayName}`;
-        }
+        const ssConfig = `aes-256-gcm:${node_password}@${hosts}:${ports}`;
+        return `ss://${CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse(ssConfig))}#${nodeDisplayName}`;
       }
       case 'vmess': {
         const vmessConfig = {
@@ -976,7 +970,7 @@ const NodeList: React.FC = () => {
                       <br />
                       <Text code style={{ fontSize: '13px' }}>
                         {isLinkShareableProtocol(currentShareNode.protocol) 
-                          ? (currentShareNode.protocol === 'shadowsocks' ? '2022-blake3-aes-256-gcm' : '无/Auto')
+                          ? (currentShareNode.protocol === 'shadowsocks' ? 'aes-256-gcm' : '无/Auto')
                           : (currentShareNode.node_user || '无')
                         }
                       </Text>
@@ -988,7 +982,7 @@ const NodeList: React.FC = () => {
                       <br />
                       <Text code style={{ fontSize: '13px', wordBreak: 'break-all' }}>
                         {isLinkShareableProtocol(currentShareNode.protocol) 
-                          ? (currentShareNode.uuid || currentShareNode.node_password || '无')
+                          ? (currentShareNode.uuid || '无')
                           : currentShareNode.node_password
                         }
                       </Text>
