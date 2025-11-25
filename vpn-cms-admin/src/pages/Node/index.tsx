@@ -982,7 +982,7 @@ const NodeList: React.FC = () => {
                       <br />
                       <Text code style={{ fontSize: '13px', wordBreak: 'break-all' }}>
                         {isLinkShareableProtocol(currentShareNode.protocol) 
-                          ? (currentShareNode.uuid || '无')
+                          ? (currentShareNode.uuid|| currentShareNode.node_password  || '无')
                           : currentShareNode.node_password
                         }
                       </Text>
