@@ -170,7 +170,7 @@ SIMPLE_JWT = {
 AUTH_USER_MODEL = 'users.User'
 
 # 中转API Configuration
-API_BASE_URL = 'https://np.qwqcdn.com'
+API_BASE_URL = 'https://zf.zf6666.xyz'
 
 # Email settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
