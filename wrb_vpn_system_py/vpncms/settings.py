@@ -170,7 +170,7 @@ SIMPLE_JWT = {
 AUTH_USER_MODEL = 'users.User'
 
 # 中转API Configuration
-API_BASE_URL = 'https://didiaozhuanfa.uk'
+API_BASE_URL = 'https://yinuo.pro'
 
 # Email settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
