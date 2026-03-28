@@ -530,6 +530,7 @@ class TransitAccountViewSet(viewsets.ModelViewSet):
         # 按照show_order排序
         inbounds.sort(key=lambda x: x.get('show_order', 999))
         outbounds.sort(key=lambda x: x.get('show_order', 999))
+        self._ensure_outbound_placeholder(outbounds)
         
         return Response({
             'code': 200,
@@ -608,6 +609,7 @@ class TransitAccountViewSet(viewsets.ModelViewSet):
         # 按照show_order排序
         inbounds.sort(key=lambda x: x.get('show_order', 999))
         outbounds.sort(key=lambda x: x.get('show_order', 999))
+        self._ensure_outbound_placeholder(outbounds)
         
         return Response({
             'code': 200,
@@ -617,6 +619,11 @@ class TransitAccountViewSet(viewsets.ModelViewSet):
                 'outbounds': outbounds
             }
         })
+    
+    def _ensure_outbound_placeholder(self, outbounds):
+        """无 OutboundBySite 时补一条「直接转发」选项，避免前端拿到空列表。"""
+        if not outbounds:
+            outbounds.append({'id': 0, 'name': '不使用隧道，直接转发'})
     
     def _get_device_groups(self, token, account):
         """
@@ -749,6 +756,7 @@ class TransitAccountViewSet(viewsets.ModelViewSet):
             # 按照show_order排序
             inbounds.sort(key=lambda x: x.get('show_order', 999))
             outbounds.sort(key=lambda x: x.get('show_order', 999))
+            self._ensure_outbound_placeholder(outbounds)
             
             return Response({
                 'code': 200,
